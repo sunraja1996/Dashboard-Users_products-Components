@@ -30,7 +30,15 @@ function Sidebar(){
             <li className="nav-item">
                 <Link className="nav-link" to="/portal/users">
                     <i className="fas fa-fw fa-table"></i>
-                    <span>Users</span>
+                    <span>Teachers</span>
+                    </Link>
+            </li>
+
+
+            <li className="nav-item">
+                <Link className="nav-link" to="/portal/students">
+                    <i className="fas fa-fw fa-table"></i>
+                    <span>Students</span>
                     </Link>
             </li>
 

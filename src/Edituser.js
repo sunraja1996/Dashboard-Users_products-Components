@@ -1,64 +1,72 @@
-import React from "react";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from 'react'
+import { Link,Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react"
 import { useFormik } from "formik";
+import { useParams } from "react-router-dom";
 import "./App.css";
-import axios from "axios"; 
 
+function Edituser() {
+      let [isLoading, setLoading] = useState(false);
+      let params = useParams();
+      let navigate = useNavigate();
+      const formik = useFormik({
+            initialValues: {
+              Name: "",
+              Position: "",
+              Office: "",
+              Email: "",
+              Age: "",
+              Startdate: "",
+              Salary: "",
+            },
+            validate : (values) => {
+              let errors = {}
+              
+              if(!values.Name){
+                errors.Name = "Please enter your name"
+              }else if(values.Name.length<5){
+                errors.Name = "Character should be more than 5"
+              }
+                
+              if(!values.Position){
+                errors.Position = "please enter your position"
+              }
+        
+              if(!values.Email){
+                errors.Email = "please enter your eMail ID"
+              }
+        
+              if(values.Age<18){
+                errors.Age = "Age must be above 18"
+              }
+        
+              return errors
+            },
+            onSubmit: async(values) => {
+                 try {
+                  await axios.put(`https://62bc5de3eff39ad5ee23cb9b.mockapi.io/api/staffs/${params.id}`,values);
+                  navigate("/portal/users")
+                 } catch (error) {
+                  alert("Error");
+                  console.log(error);
+                 }
+            },
+          });
+      useEffect(()=>{
+            let fetchdata = async () => {
+              let userData = await axios.get(`https://62bc5de3eff39ad5ee23cb9b.mockapi.io/api/staffs/${params.id}`);
+            //   setUsers(userData.data);
+            formik.setValues(userData.data);
+            }
+            fetchdata()
+          }, [])
 
-function Createuser() {
-  let Navigate = useNavigate();
-  let [isLoading, setLoading] = useState(false)   
-  let formik = useFormik({
-    initialValues: {
-      Name: "",
-      Position: "",
-      Office: "",
-      Email: "",
-      Age: "",
-      Startdate: "",
-      Salary: "",
-    },
-    validate : (values) => {
-      let errors = {}
       
 
 
-      if(!values.Name){
-        errors.Name = "Please enter your name"
-      }else if(values.Name.length<5){
-        errors.Name = "Character should be more than 5"
-      }
-        
-      if(!values.Position){
-        errors.Position = "please enter your position"
-      }
-
-      if(!values.Email){
-        errors.Email = "please enter your eMail ID"
-      }
-
-      if(values.Age<18){
-        errors.Age = "Age must be above 18"
-      }
-
-      return errors
-    },
-    onSubmit: async(values) => {
-      try {
-      setLoading(true)
-      console.log(values);
-      await axios.post("https://62bc5de3eff39ad5ee23cb9b.mockapi.io/api/staffs", values)
-      Navigate('/portal/users')
-      } catch (error) {
-        console.log(error);
-      }
-
-    },
-  });
-
   return (
-    <div className="container">
+      <div className="container">
       <div class="d-flex justify-content-start align-items-center">
         <div class="mx-2 px-4 py-2 mb-2 bg-primary bg-gradient text-white rounded-pill">
           <Link to="/portal/users">
@@ -66,7 +74,7 @@ function Createuser() {
           </Link>
         </div>
         <h1 className="mx-2 px-4 py-2 ml-5 text-center text-uppercase font-weight-bold">
-          Create User
+          Update User
         </h1>
       </div>
       <hr className="sidebar-divider d-none d-md-block" />
@@ -185,15 +193,15 @@ function Createuser() {
         <div className="d-grid gap-2 col-6 mx-auto">
         
           <button 
-          type="submit" className={`btn btn-primary text-uppercase  
-          disabled=${!formik.isValid && isLoading}`} 
-          > Submit
+          type="submit" className="btn btn-primary text-uppercase" 
+          disabled={!formik.isValid && isLoading} 
+          > Update
           </button>
           
         </div>
       </form>
     </div>
-  );
+  )
 }
 
-export default Createuser;
+export default Edituser

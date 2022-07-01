@@ -5,18 +5,16 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useFormik } from "formik";
 
-function Viewuser() {
+function Viewstudent() {
   let params = useParams();
   
   const formik = useFormik({
     initialValues: {
       Name: "",
-      Position: "",
-      Office: "",
-      Email: "",
+      Standard: "",
+      Section: "",
       Age: "",
-      Startdate: "",
-      Salary: "",
+      Totalmarks: "",
     },
     validate: (values) => {
       let errors = {};
@@ -27,16 +25,12 @@ function Viewuser() {
         errors.Name = "Character should be more than 5";
       }
 
-      if (!values.Position) {
-        errors.Position = "please enter your position";
+      if (!values.Section) {
+        errors.Section = "please enter your Section";
       }
 
-      if (!values.Email) {
-        errors.Email = "please enter your eMail ID";
-      }
-
-      if (values.Age < 18) {
-        errors.Age = "Age must be above 18";
+      if (values.Age > 18) {
+        errors.Age = "Age must be below 18";
       }
 
       return errors;
@@ -45,11 +39,11 @@ function Viewuser() {
   });
   useEffect(() => {
     let fetchdata = async () => {
-      let userData = await axios.get(
-        `https://62bc5de3eff39ad5ee23cb9b.mockapi.io/api/staffs/${params.id}`
+      let user1Data = await axios.get(
+        `https://62bc5de3eff39ad5ee23cb9b.mockapi.io/api/Students/${params.id}`
       );
       //   setUsers(userData.data);
-      formik.setValues(userData.data);
+      formik.setValues(user1Data.data);
     };
     fetchdata();
   }, []);
@@ -58,7 +52,7 @@ function Viewuser() {
     <>
       <div class="d-flex justify-content-start align-items-center">
         <div class="mx-2 px-4 py-2 mb-2 bg-primary bg-gradient text-white rounded-pill">
-          <Link to="/portal/users">
+          <Link to="/portal/students">
             <i class="fas fa-arrow-left text-white" aria-hidden="true"></i>{" "}
           </Link>
         </div>
@@ -88,23 +82,19 @@ function Viewuser() {
           >
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Email</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
+                  <th>Name</th>
+                  <th>Standard</th>
+                  <th>Section</th>
+                  <th>Age</th>
+                  <th>Total Marks</th>
               </tr>
             </thead>
             <tr>
               <td>{formik.values.Name}</td>
-              <td>{formik.values.Position}</td>
-              <td>{formik.values.Office}</td>
-              <td>{formik.values.Email}</td>
+              <td>{formik.values.Standard}</td>
+              <td>{formik.values.Section}</td>
               <td>{formik.values.Age}</td>
-              <td>{formik.values.Startdate}</td>
-              <td>$ {formik.values.Salary}</td>
+              <td>{formik.values.Totalmarks}</td>
             </tr>
           </table>
         </div>
@@ -113,4 +103,4 @@ function Viewuser() {
   );
 }
 
-export default Viewuser;
+export default Viewstudent;

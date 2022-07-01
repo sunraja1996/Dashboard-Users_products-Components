@@ -1,66 +1,29 @@
-import React from 'react';
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react"
 
 
 function Products() {
-  const productdetails = [ 
-    {
-          id : 1,
-          title : "iPhone 11",
-          image : "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-card-40-iphone-11-202108?wid=340&hei=264&fmt=p-jpg&qlt=95&.v=1646502984732",
-          price : 599,
-
-    },
-    {
-          id : 2,
-          title : "iPhone 13",
-          image : "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-card-40-iphone13-202203?wid=340&hei=264&fmt=p-jpg&qlt=95&.v=1646335268199",
-          price : 799,
-
-    },
-    {
-          id : 3,
-          title : "iPhone 13 Pro",
-          image : "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-card-40-iphone13pro-202203?wid=340&hei=264&fmt=p-jpg&qlt=95&.v=1644989935267",
-          price : 999,
-
-    },
-    {
-          id : 4,
-          title : "iPhone 12",
-          image : "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-card-40-iphone12purple-202109?wid=340&hei=264&fmt=p-jpg&qlt=95&.v=1646335268265",
-          price : 899,
-
-    },
-    {
-          id : 5,
-          title : "Samsung A8",
-          image : "https://images.samsung.com/is/image/samsung/p6pim/my/sm-x200nidaxme/gallery/my-galaxy-a8-sm-x200-sm-x200nidaxme-thumb-532081628?$240_240_PNG$",
-          price : 499,
-
-    },
-    {
-          id : 6,
-          title : "Xiaomi Pad 5",
-          image : "https://i01.appmifile.com/webfile/globalimg/products/pc/xiaomi-pad-5/section01.jpg",
-          price : 699,
-
-    },
-    {
-          id : 7,
-          title : "Lenovo Yoga",
-          image : "https://www.lenovo.com/medias/Yoga-9-SS-Hero-Evo.png?context=bWFzdGVyfHJvb3R8NzMxNjN8aW1hZ2UvcG5nfGg5Ny9oZGYvMTI1MTM5NjIxOTcwMjIucG5nfDE4OTUyYWUzZTc2MTJmYjc0ZTdmOTIyZWY0ZWM1OWQ1MTA1ZjJhYmZlOGY1ZmQzMmIzZGRlOGU0NGY2NTc5NDE",
-          price : 399,
-
-    },
-    {
-          id : 8,
-          title : "iPad mini",
-          image : "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/ipad-mini-select-202109?wid=540&hei=530&fmt=jpeg&qlt=95&.v=1631751017000",
-          price : 899,
-    }
-    
-]
+      const [products, setProducts] = useState([])
+      // on mount
+      useEffect(()=>{
+        
+        fetchdata()
+      }, [])
+      
+      let fetchdata = async () => {
+        let userData = await axios.get("https://62bc5de3eff39ad5ee23cb9b.mockapi.io/api/product")
+        setProducts(userData.data);
+      }
+      
+      let handleDelete = async(id) => {
+        let ask = window.confirm('Do you want to Delete?')
+        if (ask){
+          await axios.delete(`https://62bc5de3eff39ad5ee23cb9b.mockapi.io/api/product/${id}`)
+          fetchdata();
+        } 
+      }
 
   return (
     <><div className="d-sm-flex align-items-center justify-content-around mb-4">
@@ -77,23 +40,23 @@ function Products() {
 
                 
        { 
-       productdetails.map((cards) => {
+       products.map((cards) => {
             return (<div className="col mb-5">
             <div className="card h-100">          
-            <img className="card-img-top" src={cards.image} alt="..." />
+            <img className="card-img-top" src={cards.Image} alt="..." />
             <hr/>
             
             <div className="card-body p-4">
                 <div className="text-center fw-bolder ">
                     
-                    <h5 className="fw-bolder">{cards.title}</h5>
-                    <span>${cards.price}</span>
+                    <h5 className="fw-bolder">{cards.Productname}</h5>
+                    <span>${cards.Productprice}</span>
                 </div>
             </div>
             <p className="text-center px-2 py-2"> Explore vast selection of products from Top Brands. Pay on Delivery. Best Deals. Easy and Fast Delivery. </p>
 
             <Link to={`/portal/products/view/${cards.id}`} className='btn btn-warning my-1'>View</Link>
-            <button className='btn btn-danger'>Delete</button>
+            <button onClick={() => handleDelete(cards.id)} className='btn btn-danger'>Delete</button>
         </div> 
         </div> )
        })
